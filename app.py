@@ -29,7 +29,7 @@ except Exception as e:
 st.sidebar.title("Navegación")
 opcion = st.sidebar.radio(
     "Selecciona el tipo de regresión:",
-    ["Regresión Lineal", "Regresión Múltiple", "Regresión Polinomial"]
+    ["Regresión Lineal", "Regresión Múltiple", "Mínimos Cuadrados"]
 )
 
 st.sidebar.markdown("---")
@@ -233,7 +233,7 @@ elif opcion == "Regresión Múltiple":
         st.error(f"Error en la regresión múltiple: {e}")
     
 
-elif opcion == "Regresión Polinomial":
+elif opcion == "Mínimos Cuadrados":
     mostrar_titulo_y_enunciado("Método de Mínimos Cuadrados (Manual)")
 
     # Extraer x e y como vectores simples
