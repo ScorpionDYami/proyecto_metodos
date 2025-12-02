@@ -1,0 +1,20 @@
+# Entornos virtuales
+venv/
+.venv/
+
+# Archivos de Streamlit
+.streamlit/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Configuración del sistema
+.DS_Store
+
+# Archivos temporales
+*.tmp
+*.log
+
