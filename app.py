@@ -217,12 +217,8 @@ if opcion == "Regresión Lineal":
 
 elif opcion == "Regresión Múltiple":
     mostrar_titulo_y_enunciado("Regresión Múltiple")
-    mostrar_estadisticas()
-    mostrar_graficas()
-    mostrar_conclusiones()
+    
 
 elif opcion == "Regresión Polinomial":
     mostrar_titulo_y_enunciado("Regresión Polinomial (Regresión Compleja)")
-    mostrar_estadisticas()
-    mostrar_graficas()
-    mostrar_conclusiones()
+    
