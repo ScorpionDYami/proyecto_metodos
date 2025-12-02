@@ -134,9 +134,6 @@ if opcion == "Regresión Lineal":
 
         st.markdown("---")
 
-        # 5. Conclusión placeholder
-        mostrar_conclusiones()
-
     except Exception as e:
         st.error(f"Error al procesar la regresión lineal: {e}")
 
