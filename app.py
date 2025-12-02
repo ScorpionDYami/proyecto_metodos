@@ -26,8 +26,6 @@ except Exception as e:
     st.error(f"Ocurrió un error al leer el Excel: {e}")
 
 
-
-
 st.sidebar.title("Navegación")
 opcion = st.sidebar.radio(
     "Selecciona el tipo de regresión:",
@@ -35,7 +33,6 @@ opcion = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Front")
 
 
 def mostrar_titulo_y_enunciado(titulo):
@@ -47,54 +44,9 @@ def mostrar_titulo_y_enunciado(titulo):
     st.markdown("---")
 
 
-def mostrar_estadisticas():
-    st.subheader("📊 Estadísticas del Modelo")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("R²", "—")
-    col2.metric("MAE", "—")
-    col3.metric("MSE/RMSE", "—")
-    st.markdown("*Metricas*")
-    st.markdown("---")
-
-
-def mostrar_graficas():
-    st.subheader("📈 Gráficas del Análisis")
-
-    col1, col2 = st.columns(2)
-
-    fig_placeholder = go.Figure()
-    fig_placeholder.add_annotation(
-        text="Placeholder de gráfica",
-        showarrow=False,
-        font=dict(size=18)
-    )
-    fig_placeholder.update_layout(
-        xaxis={"visible": False},
-        yaxis={"visible": False},
-        height=350
-    )
-
-    col1.plotly_chart(fig_placeholder, width="stretch", key="grafica_placeholder_1")
-    col2.plotly_chart(fig_placeholder, width="stretch", key="grafica_placeholder_2")
-
-    st.markdown("---")
-
-
-def mostrar_conclusiones():
-    st.subheader("📝 Conclusiones")
-    st.write("""
-        *TO-DO*
-    """)
-    st.markdown("---")
-
-
-
 if opcion == "Regresión Lineal":
     mostrar_titulo_y_enunciado("Regresión Lineal")
 
-    # ----------------------------
-    # 1. Preparar datos del Excel
-    # ----------------------------
     try:
         X = df["Edad"].values.reshape(-1, 1)
         y = df["EstresTotal"].values.reshape(-1, 1)
@@ -124,9 +76,7 @@ if opcion == "Regresión Lineal":
         # Predicción completa para la gráfica final
         y_pred = model.predict(X)
 
-        # ----------------------------
         # 2. Estadísticas del modelo
-        # ----------------------------
         mae = mean_absolute_error(y, y_pred)
         mse = mean_squared_error(y, y_pred)
 
@@ -138,9 +88,7 @@ if opcion == "Regresión Lineal":
 
         st.markdown("---")
 
-        # ----------------------------
         # 3. Gráfica de regresión lineal
-        # ----------------------------
         fig_lineal = go.Figure()
         fig_lineal.add_trace(go.Scatter(
             x=X.flatten(), y=y.flatten(),
@@ -165,9 +113,7 @@ if opcion == "Regresión Lineal":
 
         st.markdown("---")
 
-        # ----------------------------
         # 4. Gráfica de barras por rangos
-        # ----------------------------
         df["RangoEdad"] = pd.cut(df["Edad"], bins=range(3, 81, 7))
         grupo = df.groupby("RangoEdad")["EstresTotal"].mean()
 
@@ -188,17 +134,14 @@ if opcion == "Regresión Lineal":
 
         st.markdown("---")
 
-        # ----------------------------
         # 5. Conclusión placeholder
-        # ----------------------------
         mostrar_conclusiones()
 
     except Exception as e:
         st.error(f"Error al procesar la regresión lineal: {e}")
 
-    # ------------------------------------------------------------
+
     # -------- MÉTODO DE MÍNIMOS CUADRADOS (MANUAL) --------------
-    # ------------------------------------------------------------
 
     st.subheader("📐 Método de Mínimos Cuadrados (Manual)")
 
@@ -263,11 +206,12 @@ if opcion == "Regresión Lineal":
 
     # ------------------ RESULTADOS -------------------------
     st.subheader("📊 Resultados del Método Manual")
-    st.write(f"**Pendiente (m):** {m:.4f}")
-    st.write(f"**Intercepto (c):** {c:.4f}")
-    st.write(f"**ECM (Error Cuadrático Medio):** {ecm_ls:.4f}")
-    st.write(f"**EAM (Error Absoluto Medio):** {eam_ls:.4f}")
-    st.write(f"**R²:** {r2_ls:.4f}")
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Pendiente (m):", f"{m:.4f}")
+    col2.metric("Intercepto (c):", f"{c:.4f}")
+    col3.metric("ECM (Error Cuadrático Medio):", f"{ecm_ls:.4f}")
+    col4.metric("EAM (Error Absoluto Medio):", f"{eam_ls:.4f}")
+    col5.metric("R²:", f"{r2_ls:.4f}")
 
 
 
