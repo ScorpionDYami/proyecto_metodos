@@ -137,81 +137,6 @@ if opcion == "Regresión Lineal":
     except Exception as e:
         st.error(f"Error al procesar la regresión lineal: {e}")
 
-
-    # -------- MÉTODO DE MÍNIMOS CUADRADOS (MANUAL) --------------
-
-    st.subheader("Método de Mínimos Cuadrados (Manual)")
-
-    # Extraer x e y como vectores simples
-    x = df["Edad"].values
-    y_vals = df["EstresTotal"].values
-
-    n = len(x)
-
-    # Sumatorias necesarias
-    sum_x = np.sum(x)
-    sum_y = np.sum(y_vals)
-    sum_xy = np.sum(x * y_vals)
-    sum_x2 = np.sum(x * x)
-
-    # Cálculo de la pendiente m
-    m = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x**2)
-
-    # Cálculo del intercepto c
-    c = (sum_y - m * sum_x) / n
-
-    # Predicciones manuales y^ = m x + c
-    y_ls_pred = m * x + c
-
-    # Métricas del modelo manual
-    ecm_ls = mean_squared_error(y_vals, y_ls_pred)
-    eam_ls = mean_absolute_error(y_vals, y_ls_pred)
-    r2_ls = r2_score(y_vals, y_ls_pred)
-
-
-    # ------------------ GRÁFICA EN PLOTLY ------------------
-
-    fig_ls = go.Figure()
-
-    # Puntos reales
-    fig_ls.add_trace(go.Scatter(
-        x=x,
-        y=y_vals,
-        mode="markers",
-        name="Datos reales",
-        marker=dict(color="green")
-    ))
-
-    # Línea de mínimos cuadrados
-    fig_ls.add_trace(go.Scatter(
-        x=x,
-        y=y_ls_pred,
-        mode="lines",
-        name="Recta (mínimos cuadrados)",
-        line=dict(color="orange")
-    ))
-
-    fig_ls.update_layout(
-        title="Regresión por Mínimos Cuadrados: Estrés Total por Edad",
-        xaxis_title="Edad",
-        yaxis_title="Estrés Total",
-        autosize=True,
-        height=500
-    )
-
-    st.plotly_chart(fig_ls, config={"responsive": True})
-
-    # ------------------ RESULTADOS -------------------------
-    st.subheader("Resultados del Método Manual")
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("Pendiente (m):", f"{m:.4f}")
-    col2.metric("Intercepto (c):", f"{c:.4f}")
-    col3.metric("ECM (Error Cuadrático Medio):", f"{ecm_ls:.4f}")
-    col4.metric("EAM (Error Absoluto Medio):", f"{eam_ls:.4f}")
-    col5.metric("R²:", f"{r2_ls:.4f}")
-
-
-
 elif opcion == "Regresión Múltiple":
     mostrar_titulo_y_enunciado("Regresión Múltiple")
 
@@ -309,5 +234,73 @@ elif opcion == "Regresión Múltiple":
     
 
 elif opcion == "Regresión Polinomial":
-    mostrar_titulo_y_enunciado("Regresión Polinomial (Regresión Compleja)")
+    mostrar_titulo_y_enunciado("Método de Mínimos Cuadrados (Manual)")
+
+    # Extraer x e y como vectores simples
+    x = df["Edad"].values
+    y_vals = df["EstresTotal"].values
+
+    n = len(x)
+
+    # Sumatorias necesarias
+    sum_x = np.sum(x)
+    sum_y = np.sum(y_vals)
+    sum_xy = np.sum(x * y_vals)
+    sum_x2 = np.sum(x * x)
+
+    # Cálculo de la pendiente m
+    m = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x**2)
+
+    # Cálculo del intercepto c
+    c = (sum_y - m * sum_x) / n
+
+    # Predicciones manuales y^ = m x + c
+    y_ls_pred = m * x + c
+
+    # Métricas del modelo manual
+    ecm_ls = mean_squared_error(y_vals, y_ls_pred)
+    eam_ls = mean_absolute_error(y_vals, y_ls_pred)
+    r2_ls = r2_score(y_vals, y_ls_pred)
+
+
+    # ------------------ GRÁFICA EN PLOTLY ------------------
+
+    fig_ls = go.Figure()
+
+    # Puntos reales
+    fig_ls.add_trace(go.Scatter(
+        x=x,
+        y=y_vals,
+        mode="markers",
+        name="Datos reales",
+        marker=dict(color="green")
+    ))
+
+    # Línea de mínimos cuadrados
+    fig_ls.add_trace(go.Scatter(
+        x=x,
+        y=y_ls_pred,
+        mode="lines",
+        name="Recta (mínimos cuadrados)",
+        line=dict(color="orange")
+    ))
+
+    fig_ls.update_layout(
+        title="Regresión por Mínimos Cuadrados: Estrés Total por Edad",
+        xaxis_title="Edad",
+        yaxis_title="Estrés Total",
+        autosize=True,
+        height=500
+    )
+
+    st.plotly_chart(fig_ls, config={"responsive": True})
+
+    # ------------------ RESULTADOS -------------------------
+    st.subheader("Resultados del Método Manual")
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Pendiente (m):", f"{m:.4f}")
+    col2.metric("Intercepto (c):", f"{c:.4f}")
+    col3.metric("ECM (Error Cuadrático Medio):", f"{ecm_ls:.4f}")
+    col4.metric("EAM (Error Absoluto Medio):", f"{eam_ls:.4f}")
+    col5.metric("R²:", f"{r2_ls:.4f}")
     
