@@ -80,7 +80,7 @@ if opcion == "Regresión Lineal":
         mae = mean_absolute_error(y, y_pred)
         mse = mean_squared_error(y, y_pred)
 
-        st.subheader("📊 Estadísticas del Modelo")
+        st.subheader("Estadísticas del Modelo")
         col1, col2, col3 = st.columns(3)
         col1.metric("R²", f"{r2:.4f}")
         col2.metric("MAE", f"{mae:.4f}")
@@ -140,7 +140,7 @@ if opcion == "Regresión Lineal":
 
     # -------- MÉTODO DE MÍNIMOS CUADRADOS (MANUAL) --------------
 
-    st.subheader("📐 Método de Mínimos Cuadrados (Manual)")
+    st.subheader("Método de Mínimos Cuadrados (Manual)")
 
     # Extraer x e y como vectores simples
     x = df["Edad"].values
@@ -202,7 +202,7 @@ if opcion == "Regresión Lineal":
     st.plotly_chart(fig_ls, config={"responsive": True})
 
     # ------------------ RESULTADOS -------------------------
-    st.subheader("📊 Resultados del Método Manual")
+    st.subheader("Resultados del Método Manual")
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Pendiente (m):", f"{m:.4f}")
     col2.metric("Intercepto (c):", f"{c:.4f}")
@@ -214,6 +214,98 @@ if opcion == "Regresión Lineal":
 
 elif opcion == "Regresión Múltiple":
     mostrar_titulo_y_enunciado("Regresión Múltiple")
+
+    try:
+        # 1. Crear rangos de edad
+        df["RangoEdad"] = pd.cut(df["Edad"], bins=range(3, 81, 7))
+
+        # 2. Convertir rangos a variables dummy
+        # Convertimos a int para que se muestren como 0 y 1 en lugar de True/False
+        X_dummy = pd.get_dummies(df["RangoEdad"], prefix="Rango", drop_first=True).astype(int)
+
+        # 3. Variables dependiente y matriz final
+        X_multi = X_dummy.values
+        y_multi = df["EstresTotal"].values.reshape(-1, 1)
+
+        # 4. Modelo de regresión lineal múltiple
+        modelo_multiple = LinearRegression()
+        modelo_multiple.fit(X_multi, y_multi)
+
+        # 5. Predicciones y evaluación
+        y_pred_multiple = modelo_multiple.predict(X_multi)
+        r2_multiple = r2_score(y_multi, y_pred_multiple)
+        mae = mean_absolute_error(y_multi, y_pred_multiple)
+        mse = mean_squared_error(y_multi, y_pred_multiple)
+
+        # ------------------ RESULTADOS DETALLADOS ------------------
+        st.subheader("Comparación: Real vs Predicho")
+        
+        df_resultados = df[["Edad", "EstresTotal"]].copy()
+        df_resultados["Predicción"] = y_pred_multiple.flatten()
+        df_resultados["Error Residual"] = df_resultados["EstresTotal"] - df_resultados["Predicción"]
+        
+        st.dataframe(df_resultados)
+
+        # ------------------ MÉTRICAS ------------------
+        st.subheader("Estadísticas del Modelo")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("R²", f"{r2_multiple:.4f}")
+        col2.metric("MAE", f"{mae:.4f}")
+        col3.metric("MSE", f"{mse:.4f}")
+
+        st.markdown("---")
+
+        # ------------------ COEFICIENTES ------------------
+        with st.expander("Ver Coeficientes del Modelo"):
+            coef_df = pd.DataFrame({
+                "Variable": ["Intercepto"] + list(X_dummy.columns),
+                "Coeficiente": [modelo_multiple.intercept_[0]] + list(modelo_multiple.coef_[0])
+            })
+            st.dataframe(coef_df)
+
+        st.markdown("---")
+
+        # ------------------ GRÁFICA PLOTLY ------------------
+        st.subheader("Regresión Múltiple por Rangos de Edad")
+
+        # Ordenar para gráfica continua
+        df_ordenado = df.sort_values("Edad")
+        X_dummy_ordenado = pd.get_dummies(df_ordenado["RangoEdad"], prefix="Rango", drop_first=True)
+        y_linea = modelo_multiple.predict(X_dummy_ordenado.values)
+
+        fig = go.Figure()
+
+        # Puntos reales
+        fig.add_trace(go.Scatter(
+            x=df["Edad"],
+            y=df["EstresTotal"],
+            mode="markers",
+            name="Datos Reales",
+            marker=dict(color="blue")
+        ))
+
+        # Línea del modelo múltiple
+        fig.add_trace(go.Scatter(
+            x=df_ordenado["Edad"],
+            y=y_linea.flatten(),
+            mode="lines",
+            name="Modelo Múltiple (Rangos)",
+            line=dict(color="red", width=3)
+        ))
+
+        fig.update_layout(
+            title="Regresión Lineal Múltiple por Rangos de Edad",
+            xaxis_title="Edad",
+            yaxis_title="Estrés Total",
+            height=500
+        )
+
+        st.plotly_chart(fig, config={"responsive": True})
+
+        st.markdown("---")
+
+    except Exception as e:
+        st.error(f"Error en la regresión múltiple: {e}")
     
 
 elif opcion == "Regresión Polinomial":
