@@ -37,10 +37,6 @@ st.sidebar.markdown("---")
 
 def mostrar_titulo_y_enunciado(titulo):
     st.header(titulo)
-    st.subheader("Enunciado del Problema")
-    st.write("""
-        *TO-DO*
-    """)
     st.markdown("---")
 
 
